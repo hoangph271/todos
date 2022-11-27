@@ -11,7 +11,7 @@ export default function Home ({ data: todos }: PageProps<Todo[]>) {
   return (
     <>
       <Head>
-        <title>#Tasks</title>
+        <title>#Todos</title>
       </Head>
       <div class="p-4 mx-auto max-w-screen-md">
         {todos.map(({ _id, title, isDone, content, deadline }) => {
