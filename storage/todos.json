@@ -1,0 +1,18 @@
+{
+  "todos": [
+    {
+      "_id": "PQvF48jUKL3t0tzN5R5oR",
+      "title": "hoangph271/todos",
+      "deadline": "2022-11-28T17:00:00.000Z",
+      "isDone": true,
+      "content": ""
+    },
+    {
+      "_id": "IYzRuM4Sx-RxUDjnBhLHN",
+      "title": "#Work fixes...!",
+      "isDone": false,
+      "content": "Please, dude...!",
+      "deadline": "Mon, 28 Nov 2022 07:35:00 GMT"
+    }
+  ]
+}
