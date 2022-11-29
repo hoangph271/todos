@@ -8,6 +8,9 @@ import * as $1 from "./routes/api/joke.ts";
 import * as $2 from "./routes/index.tsx";
 import * as $3 from "./routes/todos/index.tsx";
 import * as $$0 from "./islands/Counter.tsx";
+import * as $$1 from "./islands/CreateTodoForm.tsx";
+import * as $$2 from "./islands/DeleteTodoButton.tsx";
+import * as $$3 from "./islands/MarkdownEditor.tsx";
 
 const manifest = {
   routes: {
@@ -18,6 +21,9 @@ const manifest = {
   },
   islands: {
     "./islands/Counter.tsx": $$0,
+    "./islands/CreateTodoForm.tsx": $$1,
+    "./islands/DeleteTodoButton.tsx": $$2,
+    "./islands/MarkdownEditor.tsx": $$3,
   },
   baseUrl: import.meta.url,
   config,

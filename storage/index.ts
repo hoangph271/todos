@@ -24,6 +24,16 @@ const intoDbTodo = (todo: Todo): DbTodo => {
   }
 }
 
+const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => Promise<T>) => {
+  const todosDb = await loadTodosDb()
+
+  try {
+    await handler(todosDb)
+  } finally {
+    await todosDb.write()
+  }
+}
+
 export const putTodo = async (todo: Todo) => {
   const dbTodo = intoDbTodo(todo)
   const todosDb = await loadTodosDb()
@@ -43,4 +53,12 @@ export const getTodos = async (): Promise<Todo[]> => {
           : undefined
       }
     })
+}
+
+export const deleteTodo = async (_id: string) => {
+  await withTodosDbWrite(async todosDb => {
+    const index = todosDb.data!.todos.findIndex(todo => todo._id === _id)
+
+    await todosDb.data!.todos.splice(index, 1)
+  })
 }

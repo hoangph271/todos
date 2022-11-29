@@ -7,6 +7,9 @@ export default function Home() {
       <Head>
         <title>Fresh App</title>
       </Head>
+      <a href="/todos" class="text-blue-600 hover:underline">
+        #Todos
+      </a>
       <div class="p-4 mx-auto max-w-screen-md">
         <img
           src="/logo.svg"
