@@ -1,3 +1,7 @@
+export type AnyEntity = {
+  _id: string
+}
+
 export type Todo = {
   _id: string
   title: string
