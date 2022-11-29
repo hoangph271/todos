@@ -12,7 +12,6 @@ import * as $$0 from "./islands/Counter.tsx";
 import * as $$1 from "./islands/DeleteTodoButton.tsx";
 import * as $$2 from "./islands/EditTodoButton.tsx";
 import * as $$3 from "./islands/EditTodoForm.tsx";
-import * as $$4 from "./islands/MarkdownEditor.tsx";
 
 const manifest = {
   routes: {
@@ -27,7 +26,6 @@ const manifest = {
     "./islands/DeleteTodoButton.tsx": $$1,
     "./islands/EditTodoButton.tsx": $$2,
     "./islands/EditTodoForm.tsx": $$3,
-    "./islands/MarkdownEditor.tsx": $$4,
   },
   baseUrl: import.meta.url,
   config,

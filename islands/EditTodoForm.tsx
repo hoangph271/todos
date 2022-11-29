@@ -1,9 +1,9 @@
 import { useRef } from "preact/hooks"
 import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4"
-
-import MarkdownEditor from "./MarkdownEditor.tsx"
 import * as _ from 'npm:@types/ckeditor'
+
 import { DbTodo, StyledProps } from "../types.ts"
+import MarkdownEditor from "../components/MarkdownEditor.tsx";
 
 type EditTodoFormProps = {
   todo?: DbTodo
