@@ -7,24 +7,12 @@ type EditTodoButtonProps = {
 }
 
 export default function EditTodoButton ({ todo }: StyledProps<EditTodoButtonProps>) {
-  const [isEditing, setIsEditing] = useState(false)
-
   return (
-      <button
+      <a
         className="m-1 text-white bg-blue-600 border-blue-600 border-2 border-transparent px-2 py-1 hover:bg-blue-900"
-        onClick={() => {
-          setIsEditing(true)
-        }}
+        href={`/todos/${todo._id}`}
       >
         <span>Edit</span>
-        {isEditing && (
-          <dialog open className="bg-white flex items-center justify-center absolute h-screen w-screen inset-0">
-            <EditTodoForm
-              todo={todo}
-              onCancel={() => { setIsEditing(false) }}
-            />
-          </dialog>
-        )}
-      </button>
+      </a>
   )
 }

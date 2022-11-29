@@ -7,9 +7,8 @@ import { DbTodo, StyledProps } from "../types.ts"
 
 type EditTodoFormProps = {
   todo?: DbTodo
-  onCancel?(): void
 }
-export default function EditTodoForm ({ todo, onCancel, className }: StyledProps<EditTodoFormProps>) {
+export default function EditTodoForm ({ todo, className }: StyledProps<EditTodoFormProps>) {
   const contentEditor = useRef<CKEDITOR.editor>()
   const contentEl = useRef<HTMLTextAreaElement>(null)
 
@@ -70,10 +69,10 @@ export default function EditTodoForm ({ todo, onCancel, className }: StyledProps
         <button type="submit" className="flex-grow-1 border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400">
           {todo ? 'Edit' : 'Create'}
         </button>
-        {onCancel && (
+        {todo && (
           <button
             onClick={() => {
-              onCancel()
+              window.location.href = '/todos/'
             }}
             type="button"
             className="flex-grow-1 border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400"

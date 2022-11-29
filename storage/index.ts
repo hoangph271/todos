@@ -18,7 +18,7 @@ const loadTodosDb = async () => {
   return todosDb
 }
 
-const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => T | Promise<T>) => {
+const withTodosDb = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => T | Promise<T>) => {
   const todosDb = await loadTodosDb()
 
   try {
@@ -27,15 +27,19 @@ const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => T
     await todosDb.write()
   }
 }
+const withReadonlyTodosDb = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => T | Promise<T>) => {
+  const todosDb = await loadTodosDb()
+  return await handler(todosDb)
+}
 
 export const postTodo = async (dbTodo: DbTodo) => {
-  await withTodosDbWrite((todosDb) => {
+  await withTodosDb((todosDb) => {
     todosDb.data!.todos.push(dbTodo)
   })
 }
 
 export const putTodo = async (dbTodo: DbTodo) => {
-  await withTodosDbWrite((todosDb) => {
+  await withTodosDb((todosDb) => {
     const index = todosDb.data!.todos.findIndex(todo => todo._id === dbTodo._id)
 
     todosDb.data!.todos.splice(index, 1, dbTodo)
@@ -46,8 +50,14 @@ export const getTodos = async (): Promise<DbTodo[]> => {
   return (await loadTodosDb()).data!.todos
 }
 
+export const getTodoById = (_id: string): Promise<DbTodo | undefined> => {
+  return withReadonlyTodosDb((todosDb) => {
+    return todosDb.data?.todos.find(todo => todo._id === _id)
+  })
+}
+
 export const deleteTodo = async (_id: string) => {
-  await withTodosDbWrite(async todosDb => {
+  await withTodosDb(async todosDb => {
     const index = todosDb.data!.todos.findIndex(todo => todo._id === _id)
 
     await todosDb.data!.todos.splice(index, 1)
