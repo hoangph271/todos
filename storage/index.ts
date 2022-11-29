@@ -39,7 +39,6 @@ export const putTodo = async (dbTodo: DbTodo) => {
     const index = todosDb.data!.todos.findIndex(todo => todo._id === dbTodo._id)
 
     todosDb.data!.todos.splice(index, 1, dbTodo)
-    console.info(todosDb.data!.todos)
   })
 }
 
