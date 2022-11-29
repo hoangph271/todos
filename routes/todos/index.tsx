@@ -44,7 +44,11 @@ export default function Home ({ data: todos }: PageProps<Todo[]>) {
                     </p>
                   )}
                   {content && (
-                    <div id="todo-checkbox-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }} class="text-xs font-normal" />
+                    <div
+                      id="todo-checkbox-text"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+                      class="text-xs font-normal"
+                    />
                   )}
               </div>
               <DeleteTodoButton

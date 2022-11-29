@@ -36,7 +36,7 @@ const MarkdownEditor = forwardRef<CKEDITOR.editor | unknown, MarkdownEditorProps
       <script
         src="https://cdn.ckeditor.com/ckeditor5/35.3.2/inline/ckeditor.js"
       />
-      <div ref={ckEditor}></div>
+      <div ref={ckEditor} style={{ borderColor: 'lightgray' }} />
     </>
   )
 })
