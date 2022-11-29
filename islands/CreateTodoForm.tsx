@@ -48,7 +48,7 @@ export default function CreateTodoForm () {
           />
         </label>
         <label htmlFor="content" className="flex flex-col">
-          <span>Content</span>
+          <span>Content:</span>
           <MarkdownEditor ref={contentEditor} />
           <textarea ref={contentEl} id="content" style="display: none;" name="content" />
         </label>

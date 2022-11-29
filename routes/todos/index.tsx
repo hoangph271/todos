@@ -9,6 +9,50 @@ import DeleteTodoButton from '../../islands/DeleteTodoButton.tsx';
 import { getTodos, putTodo, deleteTodo } from '../../storage/index.ts';
 import { AnyEntity, Todo } from '../../storage/types.ts';
 
+type TodoItemProps = Todo
+const TodoItem = ({ _id, title, isDone, content, deadline }: TodoItemProps) => {
+  return (
+    <div
+      class="flex items-center pl-4 rounded border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center">
+        <input
+          id={`bordered-checkbox-${_id}`}
+          type="checkbox"
+          checked={isDone}
+          disabled={isDone}
+          aria-describedby={`todo-checkbox-text`}
+          class="w-4 h-4 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+        />
+      </div>
+      <div class={`ml-2 flex-grow-1 text-sm ${isDone && 'text-gray-900 dark:text-gray-300'}`}>
+        {content ? (
+          <details>
+            <summary>{ title }</summary>
+            <div
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+              class="text-xs font-normal"
+            />
+          </details>
+        ) : (
+          <div
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+            class="text-xs font-normal"
+          />
+        )}
+        {deadline && (
+          <p class="text-xs font-normal">
+            {deadline.toLocaleString()}
+          </p>
+        )}
+      </div>
+      <DeleteTodoButton
+        _id={_id}
+      />
+    </div>
+  )
+}
+
 export default function Home ({ data: todos }: PageProps<Todo[]>) {
   return (
     <>
@@ -16,45 +60,9 @@ export default function Home ({ data: todos }: PageProps<Todo[]>) {
         <title>#Todos</title>
       </Head>
       <div class="p-4 mx-auto max-w-screen-md">
-        {todos.map(({ _id, title, isDone, content, deadline }) => {
+        {todos.map((todo) => {
           return (
-            <div
-              class="flex items-center pl-4 rounded border border-gray-200 dark:border-gray-700"
-            >
-              <div class="flex items-center">
-                <input
-                  id={`bordered-checkbox-${_id}`}
-                  type="checkbox"
-                  checked={isDone}
-                  disabled={isDone}
-                  aria-describedby={`todo-checkbox-text`}
-                  class="w-4 h-4 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
-              <div class={`ml-2 flex-grow-1 text-sm ${isDone && 'text-gray-900 dark:text-gray-300'}`}>
-                <label
-                  for={`bordered-checkbox-${_id}`}
-                  class="py-4 ml-2 w-full text-sm font-medium"
-                >
-                  { title }
-                </label>
-                  {deadline && (
-                    <p class="text-xs font-normal">
-                      {deadline.toLocaleString()}
-                    </p>
-                  )}
-                  {content && (
-                    <div
-                      id="todo-checkbox-text"
-                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
-                      class="text-xs font-normal"
-                    />
-                  )}
-              </div>
-              <DeleteTodoButton
-                _id={_id}
-              />
-            </div>
+            <TodoItem {...todo} />
           )
         })}
         <CreateTodoForm />
