@@ -1,35 +1,47 @@
 import { useRef } from "preact/hooks"
+import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4"
+
 import MarkdownEditor from "./MarkdownEditor.tsx"
 import * as _ from 'npm:@types/ckeditor'
+import { DbTodo, StyledProps } from "../types.ts"
 
-export default function CreateTodoForm () {
+type EditTodoFormProps = {
+  todo?: DbTodo
+  onCancel?(): void
+}
+export default function EditTodoForm ({ todo, onCancel, className }: StyledProps<EditTodoFormProps>) {
   const contentEditor = useRef<CKEDITOR.editor>()
   const contentEl = useRef<HTMLTextAreaElement>(null)
 
   return (
     <form
+      action="/todos/"
       method="post"
       encType="multipart/form-data"
       style={{ width: 'fit-content' }}
-      className="flex m-auto mt-2 flex-col items-center rounded border items-stretch"
+      className={className ?? '' + ' flex flex-col items-center rounded border items-stretch'}
       onSubmit={() => {
         contentEl.current!.innerHTML = contentEditor.current!.getData()
       }}
     >
       <div className="">
+        {todo && (
+          <input type="text" style={{ display: 'none' }} name="_id" id="_id" value={todo._id} />
+        )}
         <label className="">
           <span>Done:</span>
           <input
             name="is_done"
             type="checkbox"
             id="is_done-checkbox"
-            defaultChecked={false}
+            defaultChecked={todo?.isDone ?? false}
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
         </label>
         <label className="flex flex-col">
           <span>Deadline:</span>
           <input
+            value={todo?.deadline ? dayjs(todo?.deadline).format('YYYY-MM-DDThh:mm') : ''}
             placeholder="deadline"
             name="deadline"
             type="datetime-local"
@@ -43,19 +55,33 @@ export default function CreateTodoForm () {
           <span>Title:</span>
           <input
             required
+            value={todo?.title}
             name="title"
             placeholder="title"
           />
         </label>
         <label htmlFor="content" className="flex flex-col">
           <span>Content:</span>
-          <MarkdownEditor ref={contentEditor} />
+          <MarkdownEditor ref={contentEditor} initialContent={todo?.content} />
           <textarea ref={contentEl} id="content" style="display: none;" name="content" />
         </label>
       </div>
-      <button type="submit" className="border-2 px-2 py-1">
-        Create
-      </button>
+      <div className="flex justify-between">
+        <button type="submit" className="flex-grow-1 border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400">
+          {todo ? 'Edit' : 'Create'}
+        </button>
+        {onCancel && (
+          <button
+            onClick={() => {
+              onCancel()
+            }}
+            type="button"
+            className="flex-grow-1 border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   )
 }

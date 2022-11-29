@@ -1,16 +1,21 @@
 import { Head } from '$fresh/runtime.ts';
 import { Handlers, PageProps } from '$fresh/server.ts';
 import { multiParser } from "https://deno.land/x/multiparser@0.114.0/mod.ts"
-import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 import sanitizeHtml from 'npm:sanitize-html'
-import CreateTodoForm from '../../islands/CreateTodoForm.tsx';
+import { nanoid } from 'https://deno.land/x/nanoid@v3.0.0/nanoid.ts';
+
+import EditTodoForm from '../../islands/EditTodoForm.tsx';
 import DeleteTodoButton from '../../islands/DeleteTodoButton.tsx';
+import EditTodoButton from '../../islands/EditTodoButton.tsx';
+import { getTodos, postTodo, deleteTodo, putTodo } from '../../storage/index.ts';
+import { AnyEntity, DbTodo } from '../../types.ts';
 
-import { getTodos, putTodo, deleteTodo } from '../../storage/index.ts';
-import { AnyEntity, Todo } from '../../storage/types.ts';
+type TodoItemProps = {
+  todo: DbTodo
+}
+const TodoItem = ({ todo }: TodoItemProps) => {
+  const { _id, title, isDone, content, deadline } = todo
 
-type TodoItemProps = Todo
-const TodoItem = ({ _id, title, isDone, content, deadline }: TodoItemProps) => {
   return (
     <div
       class="flex items-center pl-4 rounded border border-gray-200 dark:border-gray-700"
@@ -35,17 +40,19 @@ const TodoItem = ({ _id, title, isDone, content, deadline }: TodoItemProps) => {
             />
           </details>
         ) : (
-          <div
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
-            class="text-xs font-normal"
-          />
+          <p class="text-xs font-bold">
+            { title }
+          </p>
         )}
         {deadline && (
           <p class="text-xs font-normal">
-            {deadline.toLocaleString()}
+            {new Date(deadline).toLocaleString()}
           </p>
         )}
       </div>
+      <EditTodoButton
+        todo={todo}
+      />
       <DeleteTodoButton
         _id={_id}
       />
@@ -53,7 +60,7 @@ const TodoItem = ({ _id, title, isDone, content, deadline }: TodoItemProps) => {
   )
 }
 
-export default function Home ({ data: todos }: PageProps<Todo[]>) {
+export default function Home ({ data: todos }: PageProps<DbTodo[]>) {
   return (
     <>
       <Head>
@@ -62,16 +69,16 @@ export default function Home ({ data: todos }: PageProps<Todo[]>) {
       <div class="p-4 mx-auto max-w-screen-md">
         {todos.map((todo) => {
           return (
-            <TodoItem {...todo} />
+            <TodoItem todo={todo} />
           )
         })}
-        <CreateTodoForm />
+        <EditTodoForm />
       </div>
     </>
   );
 }
 
-export const handler: Handlers<Todo[]> = {
+export const handler: Handlers<DbTodo[]> = {
   async GET(_, ctx) {
     return ctx.render(await getTodos())
   },
@@ -87,17 +94,22 @@ export const handler: Handlers<Todo[]> = {
 
     if (!form) throw new Error('panic!: Bad form NOT handled')
 
-    const todo: Todo = {
-      _id: nanoid(),
+    const todo: DbTodo = {
+      _id: form.fields._id,
       title: form.fields.title,
       isDone: form.fields.is_done === 'on',
       content: form.fields.content ?? '',
-      deadline: form.fields.deadline
-        ? new Date(form.fields.deadline)
-        : undefined
+      deadline: form.fields.deadline,
     }
 
-    await putTodo(todo)
+    if (todo._id) {
+      await putTodo(todo)
+    } else {
+      await postTodo({
+        ...todo,
+        _id: nanoid()
+      })
+    }
 
     return ctx.render(await getTodos())
   }

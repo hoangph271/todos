@@ -2,18 +2,16 @@ export type AnyEntity = {
   _id: string
 }
 
-export type Todo = {
+export type DbTodo = {
   _id: string
   title: string
   isDone?: boolean
   content?: string
-  deadline?: Date
-}
-
-export type DbTodo = Omit<Todo, 'deadline'> & {
   deadline?: string
 }
 
 export type TodosDbData = {
   todos: DbTodo[]
 }
+
+export type StyledProps<T> = { className?: string } & T

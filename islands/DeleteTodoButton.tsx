@@ -5,6 +5,7 @@ type DeleteTodoButtonProps = {
 export default function DeleteTodoButton ({ _id }: DeleteTodoButtonProps) {
   return (
     <button
+      className="m-1 text-white bg-red-600 border-red-600 border-2 border-transparent px-2 py-1 hover:bg-red-900"
       onClick={async e => {
         e.preventDefault()
 
@@ -12,7 +13,6 @@ export default function DeleteTodoButton ({ _id }: DeleteTodoButtonProps) {
 
         window.location.href = '/todos'
       }}
-      className="m-1 text-white bg-red-600 border-red-600 border-2 border-transparent px-2 py-1 hover:bg-red-900"
     >
       Delete
     </button>

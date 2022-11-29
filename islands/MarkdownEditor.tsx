@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "preact/hooks"
+import { useEffect, useRef, useState } from "preact/hooks"
 import { forwardRef } from 'preact/compat'
 import {} from "preact/jsx-runtime"
 import * as _ from 'npm:@types/ckeditor'
@@ -7,16 +7,36 @@ type MarkdownEditorProps = {
   initialContent?: string
 }
 
+const useInitCkEditor = () => {
+  // deno-lint-ignore no-explicit-any
+  const [done, setIsDone] = useState(!!(window as any).InlineEditor)
+
+  useEffect(() => {
+    if (done) return
+
+    const ckEditorScript = document.createElement('script')
+    ckEditorScript.src = 'https://cdn.ckeditor.com/ckeditor5/35.3.2/inline/ckeditor.js'
+    ckEditorScript.addEventListener('load', () => {
+      setIsDone(true)
+    })
+    document.body.appendChild(ckEditorScript)
+  }, [done])
+
+  return done
+}
+
 const MarkdownEditor = forwardRef<CKEDITOR.editor | unknown, MarkdownEditorProps>((props, ref) => {
   const { initialContent } = props
   const ckEditor = useRef<HTMLDivElement>(null)
 
+  const initDone = useInitCkEditor()
+
   useEffect(() => {
+    if (!ckEditor.current) return
+    if (!initDone) return
+
     // deno-lint-ignore no-explicit-any
     const { InlineEditor } = window as any
-
-    if (!ckEditor.current) return
-    if (!InlineEditor) return
 
     InlineEditor
       .create(ckEditor.current)
@@ -29,15 +49,10 @@ const MarkdownEditor = forwardRef<CKEDITOR.editor | unknown, MarkdownEditorProps
         console.error('InlineEditor error:')
         console.error(error)
       })
-  }, [])
+  }, [initDone])
 
   return (
-    <>
-      <script
-        src="https://cdn.ckeditor.com/ckeditor5/35.3.2/inline/ckeditor.js"
-      />
-      <div ref={ckEditor} style={{ borderColor: 'lightgray' }} />
-    </>
+    <div ref={ckEditor} style={{ borderColor: 'lightgray' }} />
   )
 })
 

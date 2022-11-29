@@ -1,4 +1,4 @@
-import type { DbTodo, Todo, TodosDbData } from './types.ts'
+import type { DbTodo, TodosDbData } from '../types.ts'
 import { Low } from 'npm:lowdb'
 import { JSONFile } from 'npm:lowdb/node'
 
@@ -17,14 +17,8 @@ const loadTodosDb = async () => {
 
   return todosDb
 }
-const intoDbTodo = (todo: Todo): DbTodo => {
-  return {
-    ...todo,
-    deadline: todo.deadline?.toUTCString(),
-  }
-}
 
-const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => Promise<T>) => {
+const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => T | Promise<T>) => {
   const todosDb = await loadTodosDb()
 
   try {
@@ -34,25 +28,23 @@ const withTodosDbWrite = async <T>(handler: (loadTodosDb: Low<TodosDbData>) => P
   }
 }
 
-export const putTodo = async (todo: Todo) => {
-  const dbTodo = intoDbTodo(todo)
-  const todosDb = await loadTodosDb()
-
-  todosDb.data!.todos.push(dbTodo)
-
-  await todosDb.write()
+export const postTodo = async (dbTodo: DbTodo) => {
+  await withTodosDbWrite((todosDb) => {
+    todosDb.data!.todos.push(dbTodo)
+  })
 }
 
-export const getTodos = async (): Promise<Todo[]> => {
+export const putTodo = async (dbTodo: DbTodo) => {
+  await withTodosDbWrite((todosDb) => {
+    const index = todosDb.data!.todos.findIndex(todo => todo._id === dbTodo._id)
+
+    todosDb.data!.todos.splice(index, 1, dbTodo)
+    console.info(todosDb.data!.todos)
+  })
+}
+
+export const getTodos = async (): Promise<DbTodo[]> => {
   return (await loadTodosDb()).data!.todos
-    .map(todo => {
-      return {
-        ...todo,
-        deadline: todo.deadline
-          ? new Date(todo.deadline)
-          : undefined
-      }
-    })
 }
 
 export const deleteTodo = async (_id: string) => {
