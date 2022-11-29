@@ -70,15 +70,12 @@ export default function EditTodoForm ({ todo, className }: StyledProps<EditTodoF
           {todo ? 'Edit' : 'Create'}
         </button>
         {todo && (
-          <button
-            onClick={() => {
-              window.location.href = '/todos/'
-            }}
-            type="button"
-            className="flex-grow-1 border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400"
+          <a
+            href="/todos/"
+            className="flex-grow-1 text-center border-2 px-2 py-1 bg-sky-200 hover:bg-sky-400"
           >
             Cancel
-          </button>
+          </a>
         )}
       </div>
     </form>
