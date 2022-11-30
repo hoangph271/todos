@@ -11,7 +11,7 @@
       "_id": "IYzRuM4Sx-RxUDjnBhLHN",
       "title": "#Work fixes...!",
       "isDone": false,
-      "content": "<p>Please, dude...!</p><p>W.O.R.K</p>",
+      "content": "<p>Please, dude...!</p><ul><li>- [ ] Table</li><li>- [ ] Drawer </li></ul><h4>W.O.R.K</h4>",
       "deadline": "2022-11-30T03:00"
     }
   ]
